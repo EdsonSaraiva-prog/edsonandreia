@@ -34,6 +34,24 @@
             padding: 20px;
         }
 
+        #star-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, #1b1b2f 0%, #050505 100%);
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: twinkle var(--duration) infinite ease-in-out;
+        }
+
         @keyframes gradientBG {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -194,13 +212,49 @@
             .timer-grid { grid-template-columns: repeat(2, 1fr); }
             .carousel { height: 650px; }
         }
+
+        /* Coração da Transição corrigido */
+        #heart-transition {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 100vw;
+            height: 100vh;
+            transform: translate(-50%, -50%) scale(0);
+            z-index: 2001;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #heart-transition svg {
+            width: 100px;
+            height: 100px;
+            fill: var(--accent-color);
+        }
+
+        .expand-heart {
+            animation: heartGrow 1.8s forwards cubic-bezier(0.95, 0.05, 0.795, 0.035);
+        }
+
+        @keyframes heartGrow {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+            80% { transform: translate(-50%, -50%) scale(50); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(100); opacity: 0; }
+        }
     </style>
 </head>
 <body>
-
+    <div id="star-container"></div>
+    <div id="heart-transition">
+    <svg viewBox="0 0 24 24">
+        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+    </div>
     <div id="overlay">
         <h1>2 Anos de Nós 💜</h1>
-        <button class="btn-entrar" onclick="iniciar()">Abrir Presente</button>
+        <button class="btn-entrar" onclick="iniciarTransicao()">Abrir Presente</button>
     </div>
 
     <main id="conteudo">
@@ -246,6 +300,38 @@
     </main>
 
     <script>
+        // Gerar Estrelas de Fundo
+        const starContainer = document.getElementById('star-container');
+        for (let i = 0; i < 200; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 3 + 'px';
+            star.style.width = size;
+            star.style.height = size;
+            star.style.top = Math.random() * 100 + '%';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.setProperty('--duration', Math.random() * 3 + 2 + 's');
+            starContainer.appendChild(star);
+        }
+
+        // Transição do Coração
+        function iniciarTransicao() {
+            const heart = document.getElementById('heart-transition');
+            const overlay = document.getElementById('overlay');
+            const main = document.getElementById('conteudo');
+            const audio = document.getElementById('musica');
+
+            heart.classList.add('expand-heart');
+            overlay.style.opacity = '0';
+
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                main.style.visibility = 'visible';
+                main.style.opacity = '1';
+                audio.play().catch(() => console.log("Play manual necessário"));
+            }, 1000);
+        }
+
         // Função para iniciar o site e a música
         function iniciar() {
             document.getElementById('overlay').style.opacity = '0';
