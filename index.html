@@ -2,60 +2,45 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nosso Aniversário - 2 Anos</title>
     <style>
         :root {
             --text-color: #e0e0e0;
             --accent-color: #bb86fc; 
             --accent-glow: rgba(187, 134, 252, 0.6);
-            --glass-bg: rgba(25, 25, 25, 0.75);
-            --glass-border: rgba(187, 134, 252, 0.3);
+            --glass-bg: rgba(30, 30, 30, 0.5);
+            --glass-border: rgba(187, 134, 252, 0.2);
         }
 
-        /* Reset para evitar scrolls fantasmas no mobile */
-        html, body {
+        * {
             margin: 0;
             padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow-x: hidden;
-            background: #050505;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
+        /* Fundo Animado Gradiente */
         body {
+            background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #0a0a0a);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
             color: var(--text-color);
-            font-family: 'Segoe UI', Roboto, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding: 20px;
         }
 
-        /* Fundo com Estrelas e Nebulosa */
-        #star-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
-            background: radial-gradient(circle at 50% 50%, #121212 0%, #050505 100%);
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        .star {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            opacity: 0.5;
-            animation: twinkle var(--duration) infinite ease-in-out;
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.2); }
-        }
-
-        /* Overlay Inicial */
+        /* Tela de Entrada (Overlay) */
         #overlay {
             position: fixed;
             top: 0;
@@ -63,119 +48,112 @@
             width: 100%;
             height: 100%;
             background: #0a0a0a;
-            z-index: 2000;
+            z-index: 1000;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            text-align: center;
-            padding: 20px;
-            box-sizing: border-box;
+            transition: opacity 0.8s ease;
         }
 
         #overlay h1 {
             color: var(--accent-color);
-            font-size: 2rem;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             text-shadow: 0 0 15px var(--accent-glow);
         }
 
-        /* Transição do Coração Corrigida */
-        #heart-transition {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            width: 100px;
-            height: 100px;
-            transform: translate(-50%, -50%) scale(0);
-            z-index: 2001;
-            pointer-events: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #heart-transition svg {
-            width: 100%;
-            height: 100%;
-            fill: var(--accent-color);
-        }
-
-        .expand-heart {
-            animation: heartGrow 1.5s forwards ease-in;
-        }
-
-        @keyframes heartGrow {
-            0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
-            50% { transform: translate(-50%, -50%) scale(40); opacity: 1; }
-            100% { transform: translate(-50%, -50%) scale(80); opacity: 0; }
-        }
-
         .btn-entrar {
-            padding: 16px 45px;
-            font-size: 1.1rem;
+            padding: 15px 40px;
+            font-size: 1.2rem;
             background: transparent;
             border: 2px solid var(--accent-color);
             color: var(--accent-color);
             border-radius: 50px;
             cursor: pointer;
+            transition: 0.3s;
             font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            box-shadow: 0 0 15px rgba(187, 134, 252, 0.2);
-            -webkit-tap-highlight-color: transparent;
+            box-shadow: 0 0 10px var(--glass-border);
         }
 
-        /* Conteúdo Principal */
+        .btn-entrar:hover {
+            background: var(--accent-color);
+            color: #121212;
+            box-shadow: 0 0 20px var(--accent-color);
+        }
+
         main {
-            width: 90%;
-            max-width: 500px;
-            display: none; /* Alterado para display none para evitar bugs de layout inicial */
+            width: 100%;
+            max-width: 600px;
+            display: flex;
             flex-direction: column;
-            gap: 20px;
-            padding: 40px 0;
-            z-index: 10;
+            gap: 25px;
+            opacity: 0; /* Começa invisível até clicar no botão */
+            transition: opacity 1s ease;
         }
 
         .glass-panel {
             background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--glass-border);
-            padding: 20px;
+            padding: 25px;
             border-radius: 20px;
-            text-align: center;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
         }
 
+        h1, h2 {
+            text-align: center;
+            color: var(--accent-color);
+            text-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        /* Mensagem */
+        .message-text {
+            font-size: 1.1rem;
+            text-align: center;
+            line-height: 1.8;
+            font-style: italic;
+        }
+
+        /* Timer */
         .timer-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+            gap: 15px;
+            margin-top: 15px;
         }
 
         .time-box {
             position: relative;
             background: rgba(255, 255, 255, 0.05);
-            padding: 10px 5px;
-            border-radius: 12px;
+            padding: 15px 5px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(187, 134, 252, 0.1);
         }
 
         .time-box span {
             display: block;
-            font-size: 1.4rem;
+            font-size: 1.7rem;
             font-weight: bold;
             color: var(--accent-color);
         }
 
-        .time-box p { font-size: 0.65rem; color: #aaa; text-transform: uppercase; }
+        .time-box p {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: #aaa;
+        }
 
+        /* Coração flutuante do contador */
         .heart-float {
             position: absolute;
             bottom: 50%;
             left: 50%;
             transform: translate(-50%, 0);
             pointer-events: none;
-            animation: heartUp 0.8s ease-out forwards;
+            animation: heartUp 1s ease-out forwards;
+            font-size: 1.2rem;
         }
 
         @keyframes heartUp {
@@ -183,13 +161,14 @@
             100% { transform: translate(-50%, -40px) scale(1.5); opacity: 0; }
         }
 
+        /* Carrossel */
         .carousel {
+            position: relative;
             width: 100%;
-            height: 400px;
+            height: 1000px;
             border-radius: 20px;
             overflow: hidden;
-            border: 1px solid var(--glass-border);
-            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         .slide {
@@ -198,42 +177,42 @@
             height: 100%;
             object-fit: cover;
             opacity: 0;
-            transition: opacity 1s ease-in-out;
+            transition: opacity 1.5s ease-in-out, transform 6s linear;
+            transform: scale(1.1);
         }
 
-        .slide.active { opacity: 1; }
+        .slide.active {
+            opacity: 1;
+            transform: scale(1);
+        }
 
-        audio { width: 100%; margin-top: 10px; filter: hue-rotate(250deg) brightness(1.5); }
+        /* Player */
+        .player-container h2 { margin-bottom: 15px; }
+        audio { width: 100%; filter: invert(0.8) hue-rotate(240deg); }
 
-        /* Ajuste Mobile Específico */
-        @media (max-width: 480px) {
+        @media (max-width: 450px) {
             .timer-grid { grid-template-columns: repeat(2, 1fr); }
-            #overlay h1 { font-size: 1.5rem; }
-            .carousel { height: 350px; }
-            .time-box span { font-size: 1.2rem; }
+            .carousel { height: 650px; }
         }
     </style>
 </head>
 <body>
 
-    <div id="star-container"></div>
-    <div id="heart-transition">
-        <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-    </div>
-
     <div id="overlay">
-        <h1>Nosso Momento 💜</h1>
-        <button class="btn-entrar" onclick="iniciarTransicao()">Abrir Presente</button>
+        <h1>2 Anos de Nós 💜</h1>
+        <button class="btn-entrar" onclick="iniciar()">Abrir Presente</button>
     </div>
 
     <main id="conteudo">
         <section class="glass-panel">
-            <h2 style="font-size: 1.3rem;">Feliz Aniversário!</h2>
-            <p style="font-style: italic; font-size: 0.95rem;">"Desde 05/05/2024, cada dia é um presente ao seu lado. Te amo!"</p>
+            <h1 id="titulo">Feliz Aniversário!</h1>
+            <p class="message-text">
+                "Desde o dia 05/05/2024, minha vida ganhou uma cor nova. Este é um pequeno espaço para lembrarmos de cada segundo que passamos juntos. Eu te amo!"
+            </p>
         </section>
 
         <section class="glass-panel">
-            <h2 style="font-size: 1.1rem; margin-bottom: 15px;">Tempo de História</h2>
+            <h2>Tempo ao seu lado:</h2>
             <div class="timer-grid">
                 <div class="time-box"><span id="years">0</span><p>Anos</p></div>
                 <div class="time-box"><span id="months">0</span><p>Meses</p></div>
@@ -248,10 +227,18 @@
             <img src="foto1.jpg" class="slide active">
             <img src="foto2.jpg" class="slide">
             <img src="foto3.jpg" class="slide">
+            <img src="foto4.jpg" class="slide">
+            <img src="foto5.webp" class="slide">
+            <img src="foto6.jpg" class="slide">
+            <img src="foto7.jpg" class="slide">
+            <img src="foto8.jpg" class="slide">
+            <img src="foto9.jpg" class="slide">
+            <img src="foto10.webp" class="slide">
+            <img src="foto11.jpg" class="slide">
         </div>
 
-        <section class="glass-panel">
-            <h2 style="font-size: 1.1rem;">Nossa Música</h2>
+        <section class="glass-panel player-container">
+            <h2>Nossa Música</h2>
             <audio id="musica" loop controls>
                 <source src="musica.mp3" type="audio/mpeg">
             </audio>
@@ -259,38 +246,15 @@
     </main>
 
     <script>
-        // Estrelas otimizadas
-        const starContainer = document.getElementById('star-container');
-        const starCount = window.innerWidth < 480 ? 50 : 120;
-        for (let i = 0; i < starCount; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            const size = Math.random() * 2 + 'px';
-            star.style.width = size;
-            star.style.height = size;
-            star.style.top = Math.random() * 100 + 'vh';
-            star.style.left = Math.random() * 100 + 'vw';
-            star.style.setProperty('--duration', Math.random() * 3 + 2 + 's');
-            starContainer.appendChild(star);
-        }
-
-        function iniciarTransicao() {
-            const heart = document.getElementById('heart-transition');
-            const overlay = document.getElementById('overlay');
-            const main = document.getElementById('conteudo');
-            const audio = document.getElementById('musica');
-
-            heart.classList.add('expand-heart');
-            overlay.style.opacity = '0';
-            overlay.style.pointerEvents = 'none';
-
+        // Função para iniciar o site e a música
+        function iniciar() {
+            document.getElementById('overlay').style.opacity = '0';
             setTimeout(() => {
-                overlay.style.display = 'none';
-                main.style.display = 'flex';
-                // Pequeno delay para o display flex não quebrar a transição de opacidade
-                setTimeout(() => main.style.opacity = '1', 10);
-                audio.play().catch(() => console.log("Play manual"));
-            }, 1100);
+                document.getElementById('overlay').style.display = 'none';
+                document.getElementById('conteudo').style.opacity = '1';
+                const audio = document.getElementById('musica');
+                audio.play().catch(e => console.log("Autoplay bloqueado pelo browser"));
+            }, 800);
         }
 
         // Lógica do Contador
@@ -299,14 +263,14 @@
 
         function criarCoracao(id) {
             const box = document.getElementById(id).parentElement;
-            const h = document.createElement('div');
-            h.className = 'heart-float';
-            h.innerHTML = '💜';
-            box.appendChild(h);
-            setTimeout(() => h.remove(), 800);
+            const heart = document.createElement('div');
+            heart.className = 'heart-float';
+            heart.innerHTML = '💜';
+            box.appendChild(heart);
+            setTimeout(() => heart.remove(), 1000);
         }
 
-        function atualizar() {
+        function atualizarContador() {
             const agora = new Date();
             let anos = agora.getFullYear() - dataInicio.getFullYear();
             let meses = agora.getMonth() - dataInicio.getMonth();
@@ -316,7 +280,7 @@
             let segundos = agora.getSeconds() - dataInicio.getSeconds();
 
             if (segundos < 0) { segundos += 60; minutos--; }
-            if (minutos < 0) { minutes += 60; hours--; }
+            if (minutos < 0) { minutos += 60; horas--; }
             if (hours < 0) { hours += 24; dias--; }
             if (dias < 0) {
                 const mesAnterior = new Date(agora.getFullYear(), agora.getMonth(), 0);
@@ -325,29 +289,32 @@
             }
             if (meses < 0) { meses += 12; anos--; }
 
-            const valores = { years: anos, months: meses, days: dias, hours: horas, minutes: minutos, seconds: segundos };
-            for (let k in valores) {
-                const el = document.getElementById(k);
-                if (el && valores[k] !== valoresAntigos[k]) {
-                    el.innerText = valores[k];
-                    if (valoresAntigos[k] !== undefined) criarCoracao(k);
-                    valoresAntigos[k] = valores[k];
+            const valoresAtuais = { years: anos, months: meses, days: dias, hours: horas, minutes: minutos, seconds: segundos };
+
+            for (let key in valoresAtuais) {
+                const el = document.getElementById(key);
+                if (valoresAtuais[key] !== valoresAntigos[key]) {
+                    el.innerText = valoresAtuais[key];
+                    if (valoresAntigos[key] !== undefined) criarCoracao(key);
+                    valoresAntigos[key] = valoresAtuais[key];
                 }
             }
         }
-        setInterval(atualizar, 1000);
-        atualizar();
 
-        // Carrossel
-        let idx = 0;
+        setInterval(atualizarContador, 1000);
+        atualizarContador();
+
+        // Lógica do Carrossel
+        let slideIndex = 0;
         const slides = document.querySelectorAll('.slide');
-        if(slides.length > 0) {
-            setInterval(() => {
-                slides[idx].classList.remove('active');
-                idx = (idx + 1) % slides.length;
-                slides[idx].classList.add('active');
-            }, 4000);
+
+        function mostrarProximoSlide() {
+            slides[slideIndex].classList.remove('active');
+            slideIndex = (slideIndex + 1) % slides.length;
+            slides[slideIndex].classList.add('active');
         }
+
+        if(slides.length > 0) setInterval(mostrarProximoSlide, 4500);
     </script>
 </body>
 </html>
