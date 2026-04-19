@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosso Aniversário - 2 Anos</title>
+    <style>
+        :root {
+            --text-color: #e0e0e0;
+            --accent-color: #bb86fc; 
+            --accent-glow: rgba(187, 134, 252, 0.6);
+            --glass-bg: rgba(30, 30, 30, 0.5);
+            --glass-border: rgba(187, 134, 252, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        /* Fundo Animado Gradiente */
+        body {
+            background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #0a0a0a);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding: 20px;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Tela de Entrada (Overlay) */
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a0a;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease;
+        }
+
+        #overlay h1 {
+            color: var(--accent-color);
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .btn-entrar {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            background: transparent;
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: bold;
+            box-shadow: 0 0 10px var(--glass-border);
+        }
+
+        .btn-entrar:hover {
+            background: var(--accent-color);
+            color: #121212;
+            box-shadow: 0 0 20px var(--accent-color);
+        }
+
+        main {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            opacity: 0; /* Começa invisível até clicar no botão */
+            transition: opacity 1s ease;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: var(--accent-color);
+            text-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        /* Mensagem */
+        .message-text {
+            font-size: 1.1rem;
+            text-align: center;
+            line-height: 1.8;
+            font-style: italic;
+        }
+
+        /* Timer */
+        .timer-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .time-box {
+            position: relative;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px 5px;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid rgba(187, 134, 252, 0.1);
+        }
+
+        .time-box span {
+            display: block;
+            font-size: 1.7rem;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        .time-box p {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: #aaa;
+        }
+
+        /* Coração flutuante do contador */
+        .heart-float {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform: translate(-50%, 0);
+            pointer-events: none;
+            animation: heartUp 1s ease-out forwards;
+            font-size: 1.2rem;
+        }
+
+        @keyframes heartUp {
+            0% { transform: translate(-50%, 0) scale(0.5); opacity: 1; }
+            100% { transform: translate(-50%, -40px) scale(1.5); opacity: 0; }
+        }
+
+        /* Carrossel */
+        .carousel {
+            position: relative;
+            width: 100%;
+            height: 1000px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out, transform 6s linear;
+            transform: scale(1.1);
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Player */
+        .player-container h2 { margin-bottom: 15px; }
+        audio { width: 100%; filter: invert(0.8) hue-rotate(240deg); }
+
+        @media (max-width: 450px) {
+            .timer-grid { grid-template-columns: repeat(2, 1fr); }
+            .carousel { height: 280px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="overlay">
+        <h1>2 Anos de Nós 💜</h1>
+        <button class="btn-entrar" onclick="iniciar()">Abrir Presente</button>
+    </div>
+
+    <main id="conteudo">
+        <section class="glass-panel">
+            <h1 id="titulo">Feliz Aniversário!</h1>
+            <p class="message-text">
+                "Desde o dia 05/05/2024, minha vida ganhou uma cor nova. Este é um pequeno espaço para lembrarmos de cada segundo que passamos juntos. Eu te amo!"
+            </p>
+        </section>
+
+        <section class="glass-panel">
+            <h2>Tempo ao seu lado:</h2>
+            <div class="timer-grid">
+                <div class="time-box"><span id="years">0</span><p>Anos</p></div>
+                <div class="time-box"><span id="months">0</span><p>Meses</p></div>
+                <div class="time-box"><span id="days">0</span><p>Dias</p></div>
+                <div class="time-box"><span id="hours">0</span><p>Horas</p></div>
+                <div class="time-box"><span id="minutes">0</span><p>Minutos</p></div>
+                <div class="time-box"><span id="seconds">0</span><p>Segundos</p></div>
+            </div>
+        </section>
+
+        <div class="carousel">
+            <img src="foto1.jpg" class="slide active">
+            <img src="foto2.jpg" class="slide">
+            <img src="foto3.jpg" class="slide">
+            <img src="foto4.jpg" class="slide">
+            <img src="foto5.webp" class="slide">
+            <img src="foto6.jpg" class="slide">
+            <img src="foto7.jpg" class="slide">
+            <img src="foto8.jpg" class="slide">
+            <img src="foto9.jpg" class="slide">
+            <img src="foto10.webp" class="slide">
+            <img src="foto11.jpg" class="slide">
+        </div>
+
+        <section class="glass-panel player-container">
+            <h2>Nossa Música</h2>
+            <audio id="musica" loop controls>
+                <source src="musica.mp3" type="audio/mpeg">
+            </audio>
+        </section>
+    </main>
+
+    <script>
+        // Função para iniciar o site e a música
+        function iniciar() {
+            document.getElementById('overlay').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('overlay').style.display = 'none';
+                document.getElementById('conteudo').style.opacity = '1';
+                const audio = document.getElementById('musica');
+                audio.play().catch(e => console.log("Autoplay bloqueado pelo browser"));
+            }, 800);
+        }
+
+        // Lógica do Contador
+        const dataInicio = new Date('2024-05-05T00:00:00');
+        let valoresAntigos = {};
+
+        function criarCoracao(id) {
+            const box = document.getElementById(id).parentElement;
+            const heart = document.createElement('div');
+            heart.className = 'heart-float';
+            heart.innerHTML = '💜';
+            box.appendChild(heart);
+            setTimeout(() => heart.remove(), 1000);
+        }
+
+        function atualizarContador() {
+            const agora = new Date();
+            let anos = agora.getFullYear() - dataInicio.getFullYear();
+            let meses = agora.getMonth() - dataInicio.getMonth();
+            let dias = agora.getDate() - dataInicio.getDate();
+            let horas = agora.getHours() - dataInicio.getHours();
+            let minutos = agora.getMinutes() - dataInicio.getMinutes();
+            let segundos = agora.getSeconds() - dataInicio.getSeconds();
+
+            if (segundos < 0) { segundos += 60; minutos--; }
+            if (minutos < 0) { minutos += 60; horas--; }
+            if (hours < 0) { hours += 24; dias--; }
+            if (dias < 0) {
+                const mesAnterior = new Date(agora.getFullYear(), agora.getMonth(), 0);
+                dias += mesAnterior.getDate();
+                meses--;
+            }
+            if (meses < 0) { meses += 12; anos--; }
+
+            const valoresAtuais = { years: anos, months: meses, days: dias, hours: horas, minutes: minutos, seconds: segundos };
+
+            for (let key in valoresAtuais) {
+                const el = document.getElementById(key);
+                if (valoresAtuais[key] !== valoresAntigos[key]) {
+                    el.innerText = valoresAtuais[key];
+                    if (valoresAntigos[key] !== undefined) criarCoracao(key);
+                    valoresAntigos[key] = valoresAtuais[key];
+                }
+            }
+        }
+
+        setInterval(atualizarContador, 1000);
+        atualizarContador();
+
+        // Lógica do Carrossel
+        let slideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+
+        function mostrarProximoSlide() {
+            slides[slideIndex].classList.remove('active');
+            slideIndex = (slideIndex + 1) % slides.length;
+            slides[slideIndex].classList.add('active');
+        }
+
+        if(slides.length > 0) setInterval(mostrarProximoSlide, 4500);
+    </script>
+</body>
+</html>
