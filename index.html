@@ -9,22 +9,20 @@
             --text-color: #e0e0e0;
             --accent-color: #bb86fc; 
             --accent-glow: rgba(187, 134, 252, 0.6);
-            --glass-bg: rgba(30, 30, 30, 0.5);
-            --glass-border: rgba(187, 134, 252, 0.2);
+            --glass-bg: rgba(20, 20, 20, 0.7);
+            --glass-border: rgba(187, 134, 252, 0.3);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', Roboto, sans-serif;
         }
 
-        /* Fundo Animado Gradiente */
+        /* Fundo com Estrelas Animadas */
         body {
-            background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #0a0a0a);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+            background: #0a0a0a;
             color: var(--text-color);
             display: flex;
             flex-direction: column;
@@ -32,15 +30,33 @@
             min-height: 100vh;
             overflow-x: hidden;
             padding: 20px;
+            perspective: 1000px;
         }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        #star-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at center, #1b1b2f 0%, #050505 100%);
         }
 
-        /* Tela de Entrada (Overlay) */
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: twinkle var(--duration) infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Tela de Entrada e Efeito Coração */
         #overlay {
             position: fixed;
             top: 0;
@@ -48,18 +64,43 @@
             width: 100%;
             height: 100%;
             background: #0a0a0a;
-            z-index: 1000;
+            z-index: 2000;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            transition: opacity 0.8s ease;
+            transition: transform 1s cubic-bezier(0.7, 0, 0.3, 1);
         }
 
-        #overlay h1 {
-            color: var(--accent-color);
-            margin-bottom: 20px;
-            text-shadow: 0 0 15px var(--accent-glow);
+        /* Coração da Transição corrigido */
+        #heart-transition {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 100vw;
+            height: 100vh;
+            transform: translate(-50%, -50%) scale(0);
+            z-index: 2001;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #heart-transition svg {
+            width: 100px;
+            height: 100px;
+            fill: var(--accent-color);
+        }
+
+        .expand-heart {
+            animation: heartGrow 1.8s forwards cubic-bezier(0.95, 0.05, 0.795, 0.035);
+        }
+
+        @keyframes heartGrow {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+            80% { transform: translate(-50%, -50%) scale(50); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(100); opacity: 0; }
         }
 
         .btn-entrar {
@@ -72,60 +113,54 @@
             cursor: pointer;
             transition: 0.3s;
             font-weight: bold;
-            box-shadow: 0 0 10px var(--glass-border);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            z-index: 2002;
         }
 
         .btn-entrar:hover {
             background: var(--accent-color);
             color: #121212;
-            box-shadow: 0 0 20px var(--accent-color);
+            box-shadow: 0 0 30px var(--accent-color);
         }
 
+        /* Conteúdo Principal */
         main {
             width: 100%;
             max-width: 600px;
             display: flex;
             flex-direction: column;
             gap: 25px;
-            opacity: 0; /* Começa invisível até clicar no botão */
-            transition: opacity 1s ease;
+            visibility: hidden; /* Evita flash antes da animação */
         }
 
         .glass-panel {
             background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             border: 1px solid var(--glass-border);
             padding: 25px;
             border-radius: 20px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+            border-left: 4px solid var(--accent-color); /* Detalhe lateral */
         }
 
         h1, h2 {
             text-align: center;
             color: var(--accent-color);
-            text-shadow: 0 0 10px var(--accent-glow);
+            text-shadow: 0 0 15px var(--accent-glow);
+            margin-bottom: 10px;
         }
 
-        /* Mensagem */
-        .message-text {
-            font-size: 1.1rem;
-            text-align: center;
-            line-height: 1.8;
-            font-style: italic;
-        }
-
-        /* Timer */
         .timer-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 15px;
-            margin-top: 15px;
         }
 
         .time-box {
             position: relative;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.03);
             padding: 15px 5px;
             border-radius: 15px;
             text-align: center;
@@ -134,15 +169,9 @@
 
         .time-box span {
             display: block;
-            font-size: 1.7rem;
+            font-size: 1.8rem;
             font-weight: bold;
             color: var(--accent-color);
-        }
-
-        .time-box p {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            color: #aaa;
         }
 
         /* Coração flutuante do contador */
@@ -153,22 +182,21 @@
             transform: translate(-50%, 0);
             pointer-events: none;
             animation: heartUp 1s ease-out forwards;
-            font-size: 1.2rem;
         }
 
         @keyframes heartUp {
             0% { transform: translate(-50%, 0) scale(0.5); opacity: 1; }
-            100% { transform: translate(-50%, -40px) scale(1.5); opacity: 0; }
+            100% { transform: translate(-50%, -50px) scale(2); opacity: 0; }
         }
 
-        /* Carrossel */
         .carousel {
             position: relative;
             width: 100%;
-            height: 1000px;
+            height: 1000px; /* Ajustado para melhor visualização mobile/desktop */
             border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.7);
+            border: 1px solid var(--glass-border);
         }
 
         .slide {
@@ -177,18 +205,12 @@
             height: 100%;
             object-fit: cover;
             opacity: 0;
-            transition: opacity 1.5s ease-in-out, transform 6s linear;
-            transform: scale(1.1);
+            transition: opacity 1.5s ease-in-out;
         }
 
-        .slide.active {
-            opacity: 1;
-            transform: scale(1);
-        }
+        .slide.active { opacity: 1; }
 
-        /* Player */
-        .player-container h2 { margin-bottom: 15px; }
-        audio { width: 100%; filter: invert(0.8) hue-rotate(240deg); }
+        audio { width: 100%; filter: invert(0.8) hue-rotate(240deg); margin-top: 10px; }
 
         @media (max-width: 450px) {
             .timer-grid { grid-template-columns: repeat(2, 1fr); }
@@ -198,21 +220,28 @@
 </head>
 <body>
 
+    <div id="star-container"></div>
+    <div id="heart-transition">
+    <svg viewBox="0 0 24 24">
+        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+    </div>
+
     <div id="overlay">
-        <h1>2 Anos de Nós 💜</h1>
-        <button class="btn-entrar" onclick="iniciar()">Abrir Presente</button>
+        <h1 style="margin-bottom: 40px;">Nossos 2 Anos 💜</h1>
+        <button class="btn-entrar" onclick="iniciarTransicao()">Abrir Presente</button>
     </div>
 
     <main id="conteudo">
         <section class="glass-panel">
-            <h1 id="titulo">Feliz Aniversário!</h1>
-            <p class="message-text">
-                "Desde o dia 05/05/2024, minha vida ganhou uma cor nova. Este é um pequeno espaço para lembrarmos de cada segundo que passamos juntos. Eu te amo!"
+            <h1>Feliz Aniversário!</h1>
+            <p style="text-align: center; font-style: italic;">
+                "Desde o dia 05/05/2024, cada segundo valeu a pena. Te amo!"
             </p>
         </section>
 
         <section class="glass-panel">
-            <h2>Tempo ao seu lado:</h2>
+            <h2>Tempo ao seu lado</h2>
             <div class="timer-grid">
                 <div class="time-box"><span id="years">0</span><p>Anos</p></div>
                 <div class="time-box"><span id="months">0</span><p>Meses</p></div>
@@ -227,17 +256,9 @@
             <img src="foto1.jpg" class="slide active">
             <img src="foto2.jpg" class="slide">
             <img src="foto3.jpg" class="slide">
-            <img src="foto4.jpg" class="slide">
-            <img src="foto5.webp" class="slide">
-            <img src="foto6.jpg" class="slide">
-            <img src="foto7.jpg" class="slide">
-            <img src="foto8.jpg" class="slide">
-            <img src="foto9.jpg" class="slide">
-            <img src="foto10.webp" class="slide">
-            <img src="foto11.jpg" class="slide">
-        </div>
+            </div>
 
-        <section class="glass-panel player-container">
+        <section class="glass-panel">
             <h2>Nossa Música</h2>
             <audio id="musica" loop controls>
                 <source src="musica.mp3" type="audio/mpeg">
@@ -246,15 +267,36 @@
     </main>
 
     <script>
-        // Função para iniciar o site e a música
-        function iniciar() {
-            document.getElementById('overlay').style.opacity = '0';
+        // Gerar Estrelas de Fundo
+        const starContainer = document.getElementById('star-container');
+        for (let i = 0; i < 150; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 3 + 'px';
+            star.style.width = size;
+            star.style.height = size;
+            star.style.top = Math.random() * 100 + '%';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.setProperty('--duration', Math.random() * 3 + 2 + 's');
+            starContainer.appendChild(star);
+        }
+
+        // Transição do Coração
+        function iniciarTransicao() {
+            const heart = document.getElementById('heart-transition');
+            const overlay = document.getElementById('overlay');
+            const main = document.getElementById('conteudo');
+            const audio = document.getElementById('musica');
+
+            heart.classList.add('expand-heart');
+            overlay.style.opacity = '0';
+
             setTimeout(() => {
-                document.getElementById('overlay').style.display = 'none';
-                document.getElementById('conteudo').style.opacity = '1';
-                const audio = document.getElementById('musica');
-                audio.play().catch(e => console.log("Autoplay bloqueado pelo browser"));
-            }, 800);
+                overlay.style.display = 'none';
+                main.style.visibility = 'visible';
+                main.style.opacity = '1';
+                audio.play().catch(() => console.log("Play manual necessário"));
+            }, 1000);
         }
 
         // Lógica do Contador
@@ -263,14 +305,14 @@
 
         function criarCoracao(id) {
             const box = document.getElementById(id).parentElement;
-            const heart = document.createElement('div');
-            heart.className = 'heart-float';
-            heart.innerHTML = '💜';
-            box.appendChild(heart);
-            setTimeout(() => heart.remove(), 1000);
+            const h = document.createElement('div');
+            h.className = 'heart-float';
+            h.innerHTML = '💜';
+            box.appendChild(h);
+            setTimeout(() => h.remove(), 1000);
         }
 
-        function atualizarContador() {
+        function atualizar() {
             const agora = new Date();
             let anos = agora.getFullYear() - dataInicio.getFullYear();
             let meses = agora.getMonth() - dataInicio.getMonth();
@@ -280,7 +322,7 @@
             let segundos = agora.getSeconds() - dataInicio.getSeconds();
 
             if (segundos < 0) { segundos += 60; minutos--; }
-            if (minutos < 0) { minutos += 60; horas--; }
+            if (minutes < 0) { minutes += 60; horas--; }
             if (hours < 0) { hours += 24; dias--; }
             if (dias < 0) {
                 const mesAnterior = new Date(agora.getFullYear(), agora.getMonth(), 0);
@@ -289,32 +331,27 @@
             }
             if (meses < 0) { meses += 12; anos--; }
 
-            const valoresAtuais = { years: anos, months: meses, days: dias, hours: horas, minutes: minutos, seconds: segundos };
-
-            for (let key in valoresAtuais) {
-                const el = document.getElementById(key);
-                if (valoresAtuais[key] !== valoresAntigos[key]) {
-                    el.innerText = valoresAtuais[key];
-                    if (valoresAntigos[key] !== undefined) criarCoracao(key);
-                    valoresAntigos[key] = valoresAtuais[key];
+            const valores = { years: anos, months: meses, days: dias, hours: horas, minutes: minutos, seconds: segundos };
+            for (let k in valores) {
+                const el = document.getElementById(k);
+                if (valores[k] !== valoresAntigos[k]) {
+                    el.innerText = valores[k];
+                    if (valoresAntigos[k] !== undefined) criarCoracao(k);
+                    valoresAntigos[k] = valores[k];
                 }
             }
         }
+        setInterval(atualizar, 1000);
+        atualizar();
 
-        setInterval(atualizarContador, 1000);
-        atualizarContador();
-
-        // Lógica do Carrossel
-        let slideIndex = 0;
+        // Carrossel
+        let idx = 0;
         const slides = document.querySelectorAll('.slide');
-
-        function mostrarProximoSlide() {
-            slides[slideIndex].classList.remove('active');
-            slideIndex = (slideIndex + 1) % slides.length;
-            slides[slideIndex].classList.add('active');
-        }
-
-        if(slides.length > 0) setInterval(mostrarProximoSlide, 4500);
+        setInterval(() => {
+            slides[idx].classList.remove('active');
+            idx = (idx + 1) % slides.length;
+            slides[idx].classList.add('active');
+        }, 4000);
     </script>
 </body>
 </html>
