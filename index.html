@@ -77,6 +77,16 @@
             animation: flutuarLua 6s ease-in-out infinite;
         }
 
+            /* Os corações que saem da lua */
+            .coracao-lua {
+                position: absolute;
+                color: var(--accent-color);
+                text-shadow: 0 0 5px var(--accent-glow);
+                pointer-events: none;
+                z-index: 11;
+                font-size: 12px;
+            }
+
         /* Tela de Entrada (Overlay) */
         #overlay {
             position: fixed;
@@ -333,25 +343,78 @@
     </main>
 
     <script>
-        // Gerar Estrelas de Fundo
-        const starContainer = document.getElementById('star-container');
-        const lua = document.createElement('div');
-        lua.className = 'lua';
-        starContainer.appendChild(lua);
+        // 1. Configurações Globais
+        const dataInicio = new Date('2024-05-05T00:00:00');
+        let valoresAntigos = {};
 
-        for (let i = 0; i < 200; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            const size = Math.random() * 3 + 'px';
-            star.style.width = size;
-            star.style.height = size;
-            star.style.top = Math.random() * 100 + '%';
-            star.style.left = Math.random() * 100 + '%';
-            star.style.setProperty('--duration', Math.random() * 3 + 2 + 's');
-            starContainer.appendChild(star);
+        // 2. Gerar Céu e Lua
+        function generateSky() {
+            const starContainer = document.getElementById('star-container');
+            const isMobile = window.innerWidth < 480;
+            const starCount = isMobile ? 40 : 120;
+
+            // Criar Lua
+            const lua = document.createElement('div');
+            lua.className = 'lua';
+            lua.id = 'lua-id';
+            starContainer.appendChild(lua);
+
+            // Criar Estrelas
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = Math.random() * 2 + 'px';
+                star.style.width = size;
+                star.style.height = size;
+                star.style.top = Math.random() * 100 + 'vh';
+                star.style.left = Math.random() * 100 + 'vw';
+                star.style.setProperty('--duration', Math.random() * 3 + 2 + 's');
+                starContainer.appendChild(star);
+            }
+
+            // Iniciar corações da lua
+            setInterval(criarCoracaoSaindoDaLua, 1500);
         }
 
-        // Transição do Coração
+        // 3. Efeito dos Corações da Lua (Versão Simplificada)
+        function criarCoracaoSaindoDaLua() {
+            const lua = document.getElementById('lua-id');
+            if (!lua) return;
+
+            const c = document.createElement('div');
+            c.className = 'coracao-lua';
+            c.innerHTML = '💜';
+            
+            // Começa no centro da lua
+            c.style.left = '30px'; 
+            c.style.top = '30px';
+            
+            lua.appendChild(c);
+
+            // Direção aleatória
+            const vx = (Math.random() - 0.5) * 2; // Para os lados
+            const vy = Math.random() * 2 + 1;     // Para baixo
+            let px = 30;
+            let py = 30;
+            let op = 1;
+
+            const anima = setInterval(() => {
+                px += vx;
+                py += vy;
+                op -= 0.01;
+                
+                c.style.left = px + 'px';
+                c.style.top = py + 'px';
+                c.style.opacity = op;
+
+                if (op <= 0) {
+                    clearInterval(anima);
+                    c.remove();
+                }
+            }, 20);
+        }
+
+        // 4. Transição do Botão
         function iniciarTransicao() {
             const heart = document.getElementById('heart-transition');
             const overlay = document.getElementById('overlay');
@@ -363,34 +426,20 @@
 
             setTimeout(() => {
                 overlay.style.display = 'none';
-                main.style.visibility = 'visible';
-                main.style.opacity = '1';
-                audio.play().catch(() => console.log("Play manual necessário"));
-            }, 1000);
+                main.style.display = 'flex';
+                audio.play().catch(() => console.log("Áudio aguardando interação"));
+                setTimeout(() => main.style.opacity = '1', 50);
+            }, 1100);
         }
 
-        // Função para iniciar o site e a música
-        function iniciar() {
-            document.getElementById('overlay').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('overlay').style.display = 'none';
-                document.getElementById('conteudo').style.opacity = '1';
-                const audio = document.getElementById('musica');
-                audio.play().catch(e => console.log("Autoplay bloqueado pelo browser"));
-            }, 800);
-        }
-
-        // Lógica do Contador
-        const dataInicio = new Date('2024-05-05T00:00:00');
-        let valoresAntigos = {};
-
-        function criarCoracao(id) {
+        // 5. Contador e Corações do Timer
+        function criarCoracaoTimer(id) {
             const box = document.getElementById(id).parentElement;
-            const heart = document.createElement('div');
-            heart.className = 'heart-float';
-            heart.innerHTML = '💜';
-            box.appendChild(heart);
-            setTimeout(() => heart.remove(), 1000);
+            const h = document.createElement('div');
+            h.className = 'heart-float';
+            h.innerHTML = '💜';
+            box.appendChild(h);
+            setTimeout(() => h.remove(), 800);
         }
 
         function atualizarContador() {
@@ -404,40 +453,42 @@
 
             if (segundos < 0) { segundos += 60; minutos--; }
             if (minutos < 0) { minutos += 60; horas--; }
-            if (hours < 0) { hours += 24; dias--; }
+            if (horas < 0) { horas += 24; dias--; }
             if (dias < 0) {
-                const mesAnterior = new Date(agora.getFullYear(), agora.getMonth(), 0);
-                dias += mesAnterior.getDate();
-                meses--;
+                const mAnt = new Date(agora.getFullYear(), agora.getMonth(), 0);
+                dias += mAnt.getDate(); meses--;
             }
             if (meses < 0) { meses += 12; anos--; }
 
-            const valoresAtuais = { years: anos, months: meses, days: dias, hours: horas, minutes: minutos, seconds: segundos };
-
-            for (let key in valoresAtuais) {
-                const el = document.getElementById(key);
-                if (valoresAtuais[key] !== valoresAntigos[key]) {
-                    el.innerText = valoresAtuais[key];
-                    if (valoresAntigos[key] !== undefined) criarCoracao(key);
-                    valoresAntigos[key] = valoresAtuais[key];
+            const vals = { years: anos, months: meses, days: dias, hours: horas, minutes: minutos, seconds: segundos };
+            for (let k in vals) {
+                const el = document.getElementById(k);
+                if (el && vals[k] !== valoresAntigos[k]) {
+                    el.innerText = vals[k];
+                    if (valoresAntigos[k] !== undefined) criarCoracaoTimer(k);
+                    valoresAntigos[k] = vals[k];
                 }
             }
         }
 
-        setInterval(atualizarContador, 1000);
-        atualizarContador();
-
-        // Lógica do Carrossel
-        let slideIndex = 0;
-        const slides = document.querySelectorAll('.slide');
-
-        function mostrarProximoSlide() {
-            slides[slideIndex].classList.remove('active');
-            slideIndex = (slideIndex + 1) % slides.length;
-            slides[slideIndex].classList.add('active');
+        // 6. Carrossel
+        let sIdx = 0;
+        function carrossel() {
+            const slides = document.querySelectorAll('.slide');
+            if (slides.length > 0) {
+                slides[sIdx].classList.remove('active');
+                sIdx = (sIdx + 1) % slides.length;
+                slides[sIdx].classList.add('active');
+            }
         }
 
-        if(slides.length > 0) setInterval(mostrarProximoSlide, 4500);
+        // Inicializar tudo
+        window.onload = () => {
+            generateSky();
+            setInterval(atualizarContador, 1000);
+            atualizarContador();
+            setInterval(carrossel, 4000);
+        };
     </script>
 </body>
 </html>
