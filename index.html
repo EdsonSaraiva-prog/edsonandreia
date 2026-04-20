@@ -74,7 +74,7 @@
             opacity: 0.9;
             z-index: 1;      /* Mantém no mesmo nível das estrelas */
             pointer-events: none;
-            transform: rotate(-25deg);
+            animation: flutuarLua 6s ease-in-out infinite;
         }
 
         /* Tela de Entrada (Overlay) */
@@ -236,7 +236,7 @@
                 top: 15vh;
                 right: 40vw;
                 box-shadow: inset 8px 0px 0px 0px #e0e0e0;
-                transform: rotate(-25deg);
+                animation: flutuarLua 6s ease-in-out infinite;
             }
         }
 
@@ -270,6 +270,10 @@
             80% { transform: translate(-50%, -50%) scale(50); opacity: 1; }
             100% { transform: translate(-50%, -50%) scale(100); opacity: 0; }
         }
+        @keyframes flutuarLua {
+    0%, 100% { transform: rotate(-25deg) translateY(0px); }
+    50% { transform: rotate(-20deg) translateY(-10px); }
+}
     </style>
 </head>
 <body>
