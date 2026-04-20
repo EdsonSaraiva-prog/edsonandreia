@@ -59,6 +59,23 @@
             100% { background-position: 0% 50%; }
         }
 
+        /* Estilo da Lua Crescente em CSS Puro */
+        .lua {
+            position: fixed; /* Fixed garante que ela ignore o scroll e fique na tela */
+            top: 30vh;        /* 5% de distância do topo */
+            right: 40vw;      /* 5% de distância da direita */
+            width: 60px;
+            height: 60px;
+            background-color: transparent;
+            border-radius: 50%;
+            /* Sombra interna que forma o desenho da lua */
+            box-shadow: inset 12px 0px 0px 0px #e0e0e0; 
+            filter: drop-shadow(0 0 15px rgba(187, 134, 252, 0.5));
+            opacity: 0.9;
+            z-index: 1;      /* Mantém no mesmo nível das estrelas */
+            pointer-events: none;
+        }
+
         /* Tela de Entrada (Overlay) */
         #overlay {
             position: fixed;
@@ -212,6 +229,13 @@
         @media (max-width: 450px) {
             .timer-grid { grid-template-columns: repeat(2, 1fr); }
             .carousel { height: 650px; }
+            .lua {
+                width: 45px;
+                height: 45px;
+                top: 3vh;
+                right: 8vw;
+                box-shadow: inset 8px 0px 0px 0px #e0e0e0;
+            }
         }
 
         /* Coração da Transição corrigido */
@@ -247,7 +271,9 @@
     </style>
 </head>
 <body>
-    <div id="star-container"></div>
+    <div id="star-container">
+        <div class="lua"></div>
+    </div>
     <div id="heart-transition">
     <svg viewBox="0 0 24 24">
         <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
@@ -303,6 +329,10 @@
     <script>
         // Gerar Estrelas de Fundo
         const starContainer = document.getElementById('star-container');
+        const lua = document.createElement('div');
+        lua.className = 'lua';
+        starContainer.appendChild(lua);
+
         for (let i = 0; i < 200; i++) {
             const star = document.createElement('div');
             star.className = 'star';
