@@ -281,9 +281,17 @@
             100% { transform: translate(-50%, -50%) scale(100); opacity: 0; }
         }
         @keyframes flutuarLua {
-    0%, 100% { transform: rotate(-25deg) translateY(0px); }
-    50% { transform: rotate(-20deg) translateY(-10px); }
-}
+            0%, 100% { transform: rotate(-25deg) translateY(0px); }
+            50% { transform: rotate(-20deg) translateY(-10px); }
+        }
+        .music {
+            /* O valor de 250deg a 270deg geralmente atinge o espectro do roxo/violeta */
+            filter: sepia(100%) saturate(200%) hue-rotate(255deg) brightness(90%);
+            
+            /* Adicionando o brilho que você definiu */
+            box-shadow: 0 0 15px var(--glass-border);
+            border-radius: 50px; /* Para o brilho acompanhar o formato do player */
+        }
     </style>
 </head>
 <body>
@@ -338,7 +346,7 @@
         <section class="glass-panel player-container">
             <h2>Nossa Música</h2>
             <p class="message-text">MeloMance - Love, Maybe</p>
-            <audio id="musica" loop controls>
+            <audio id="musica" loop controls class="music">
                 <source src="musica.mp3" type="audio/mpeg">
             </audio>
         </section>
